@@ -77,3 +77,23 @@ class MergeSort(SortAlgorithm):
         result.extend(left)
         result.extend(right)
         return result
+    
+class SortingSelector:
+    def __init__(self, algorithm_name):
+        self.algorithm_name = algorithm_name.lower()
+
+    def get_algorithm(self):
+        if self.algorithm_name == "bubble":
+            return BubbleSort()
+        elif self.algorithm_name == "selection":
+            return SelectionSort()
+        elif self.algorithm_name == "quick":
+            return QuickSort()
+        elif self.algorithm_name == "merge":
+            return MergeSort()
+        else:
+            raise ValueError("Invalid algorithm name.")
+
+    def sort(self, data, order="ascending"):
+        algo = self.get_algorithm()
+        return algo.sort(data, order)
