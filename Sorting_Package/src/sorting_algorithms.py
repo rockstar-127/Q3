@@ -52,3 +52,28 @@ class QuickSort(SortAlgorithm):
                                     (x < pivot and order == "descending")]
 
         return self.sort(left, order) + mid + self.sort(right, order)
+
+
+class MergeSort(SortAlgorithm):
+    def sort(self, data, order="ascending"):
+        if len(data) <= 1:
+            return data.copy()
+
+        mid = len(data) // 2
+        left = self.sort(data[:mid], order)
+        right = self.sort(data[mid:], order)
+
+        return self._merge(left, right, order)
+
+    def _merge(self, left, right, order):
+        result = []
+        while left and right:
+            if (order == "ascending" and left[0] < right[0]) or \
+               (order == "descending" and left[0] > right[0]):
+                result.append(left.pop(0))
+            else:
+                result.append(right.pop(0))
+
+        result.extend(left)
+        result.extend(right)
+        return result
