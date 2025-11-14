@@ -36,3 +36,19 @@ class SelectionSort(SortAlgorithm):
             data[i], data[idx] = data[idx], data[i]
 
         return data
+    
+    
+class QuickSort(SortAlgorithm):
+    def sort(self, data, order="ascending"):
+        if len(data) <= 1:
+            return data.copy()
+
+        pivot = data[len(data) // 2]
+
+        left = [x for x in data if (x < pivot and order == "ascending") or
+                                   (x > pivot and order == "descending")]
+        mid = [x for x in data if x == pivot]
+        right = [x for x in data if (x > pivot and order == "ascending") or
+                                    (x < pivot and order == "descending")]
+
+        return self.sort(left, order) + mid + self.sort(right, order)
