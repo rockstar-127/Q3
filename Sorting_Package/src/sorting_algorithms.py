@@ -1,13 +1,34 @@
+"""
+sorting_algorithms.py
+This file contains all sorting algorithm classes that inherit from
+a common abstract base class (SortAlgorithm).
+"""
+
 from abc import ABC, abstractmethod
 
 class SortAlgorithm(ABC):
+    """
+    Abstract base class for all sorting algorithms.
+    Each subclass must implement the 'sort' method.
+    """
+    
     @abstractmethod
     def sort(self, data, order="ascending"):
+        """
+        Sort the given list of integers.
+        :param data: list[int] - input list
+        :param order: 'ascending' or 'descending'
+        :return: sorted list
+        """
         pass
 
 
 class BubbleSort(SortAlgorithm):
-
+    """
+    Bubble Sort algorithm implementation.
+    Repeatedly swaps adjacent elements if they are in wrong order.
+    """
+    
     def sort(self, data, order="ascending"):
         data = data.copy()
         n = len(data)
@@ -22,6 +43,11 @@ class BubbleSort(SortAlgorithm):
 
 
 class SelectionSort(SortAlgorithm):
+    """
+    Selection Sort algorithm implementation.
+    Selects the minimum/maximum element and swaps it with the first unsorted element.
+    """
+    
     def sort(self, data, order="ascending"):
         data = data.copy()
         n = len(data)
@@ -39,6 +65,10 @@ class SelectionSort(SortAlgorithm):
     
     
 class QuickSort(SortAlgorithm):
+    """
+    Quick Sort implementation using divide-and-conquer.
+    """
+    
     def sort(self, data, order="ascending"):
         if len(data) <= 1:
             return data.copy()
@@ -55,6 +85,11 @@ class QuickSort(SortAlgorithm):
 
 
 class MergeSort(SortAlgorithm):
+    """
+    Merge Sort implementation that splits the list,
+    sorts each half, and merges them.
+    """
+    
     def sort(self, data, order="ascending"):
         if len(data) <= 1:
             return data.copy()
@@ -79,6 +114,10 @@ class MergeSort(SortAlgorithm):
         return result
     
 class SortingSelector:
+    """
+    Factory class that returns and runs the selected sorting algorithm.
+    """
+    
     def __init__(self, algorithm_name):
         self.algorithm_name = algorithm_name.lower()
 

@@ -1,3 +1,8 @@
+"""
+main.py
+Demonstrates sorting using different algorithms with input redirection.
+"""
+
 from Sorting_Package.src.sorting_algorithms import SortingSelector
 
 def read_entire_file(filepath):
@@ -11,6 +16,17 @@ def read_entire_file(filepath):
         return None
 
 def validate_input(data):
+    """
+    Validates input list for all sorting algorithms.
+
+    Checks:
+    1. List must contain ONLY integers.
+    2. Length must be less than 2 × 10^5 elements.
+
+    Raises:
+        TypeError: If data is not a list or contains non-integers.
+        ValueError: If list size exceeds allowed limit.
+    """
     try :
         data = list(map(int, data))
     except :

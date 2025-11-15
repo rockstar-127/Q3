@@ -1,7 +1,12 @@
-
+"""
+Test cases for sorting algorithms.
+"""
 from ..src.sorting_algorithms import SortingSelector
 
 def test_all_sorts():
+    """
+    Tests all the sorting algorithms to ensure they sort correctly in both ascending and descending orders.
+    """
     sample = [5, 3, 1, 4, 2]
     expected_asc = [1, 2, 3, 4, 5]
     expected_desc = [5, 4, 3, 2, 1]
