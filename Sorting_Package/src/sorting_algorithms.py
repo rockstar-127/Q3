@@ -178,6 +178,37 @@ class MergeSort(SortAlgorithm):
         return merged
 
 
+# ------------------------------- SHELL SORT ---------------------------------- #
+
+class ShellSort(SortAlgorithm):
+    """Shell Sort algorithm using gap sequence."""
+
+    def sort(self, data: List[int], order: str = "ascending") -> List[int]:
+        self.validate(data)
+        arr = data.copy()
+        n = len(arr)
+        gap = n // 2
+        reverse = order == "descending"
+
+        while gap > 0:
+            for i in range(gap, n):
+                temp = arr[i]
+                j = i
+
+                while j >= gap and (
+                    (not reverse and arr[j - gap] > temp)
+                    or (reverse and arr[j - gap] < temp)
+                ):
+                    arr[j] = arr[j - gap]
+                    j -= gap
+
+                arr[j] = temp
+
+            gap //= 2
+
+        return arr
+
+
 # ---------------------------- SORTING SELECTOR ------------------------------- #
 
 class SortingSelector:
