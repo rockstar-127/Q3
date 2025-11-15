@@ -1,4 +1,6 @@
-from src.sorting_algorithms import SortingSelector
+
+from ..src.sorting_algorithms import SortingSelector
+
 def test_all_sorts():
     sample = [5, 3, 1, 4, 2]
     expected_asc = [1, 2, 3, 4, 5]
