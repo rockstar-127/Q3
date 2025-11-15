@@ -1,7 +1,4 @@
-"""
-main.py
-Demonstrates sorting using different algorithms with input redirection.
-"""
+
 
 from Sorting_Package.src.sorting_algorithms import SortingSelector
 

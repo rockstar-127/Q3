@@ -1,96 +1,153 @@
 """
 sorting_algorithms.py
-This file contains all sorting algorithm classes that inherit from
-a common abstract base class (SortAlgorithm).
+
+Implements an abstract base class for sorting algorithms and concrete
+implementations of Bubble Sort, Selection Sort, Quick Sort, Merge Sort,
+and Shell Sort. Also provides a SortingSelector factory class.
 """
 
 from abc import ABC, abstractmethod
+from typing import List
+
+
+# ----------------------------- VALIDATION HELPERS ----------------------------- #
+
+def validate_input_list(data: List[int]) -> None:
+    """
+    Validates input list for sorting algorithms.
+
+    Rules:
+    1. Must be a Python list.
+    2. Must contain ONLY integers.
+    3. Length must be less than 2 × 10^5.
+
+    Raises
+    ------
+    TypeError
+        If data is not a list or contains non-integers.
+    ValueError
+        If list exceeds maximum allowed size.
+    """
+    if not isinstance(data, list):
+        raise TypeError("Input must be a list of integers.")
+
+    if len(data) >= 2 * 10**5:
+        raise ValueError("List size must be < 2 × 10^5 elements.")
+
+    for item in data:
+        if not isinstance(item, int):
+            raise TypeError("Sorting supports ONLY integer lists.")
+
+
+# --------------------------- ABSTRACT BASE CLASS ------------------------------ #
 
 class SortAlgorithm(ABC):
     """
-    Abstract base class for all sorting algorithms.
-    Each subclass must implement the 'sort' method.
+    Abstract base class defining the interface for all sorting algorithms.
     """
-    
+
     @abstractmethod
-    def sort(self, data, order="ascending"):
+    def sort(self, data: List[int], order: str = "ascending") -> List[int]:
         """
         Sort the given list of integers.
-        :param data: list[int] - input list
-        :param order: 'ascending' or 'descending'
-        :return: sorted list
-        """
-        pass
 
+        Parameters
+        ----------
+        data : list[int]
+            The list of integers to be sorted.
+        order : str, optional
+            Sorting order, by default "ascending".
+
+        Returns
+        -------
+        list[int]
+            A sorted list of integers.
+        """
+
+
+    def validate(self, data: List[int]) -> None:
+        """
+        Validates input before sorting.
+
+        Parameters
+        ----------
+        data : list[int]
+            List to validate.
+        """
+        validate_input_list(data)
+
+
+# ----------------------------- BUBBLE SORT ----------------------------------- #
 
 class BubbleSort(SortAlgorithm):
-    """
-    Bubble Sort algorithm implementation.
-    Repeatedly swaps adjacent elements if they are in wrong order.
-    """
-    
-    def sort(self, data, order="ascending"):
-        data = data.copy()
-        n = len(data)
+    """Bubble Sort algorithm implementation."""
+
+    def sort(self, data: List[int], order: str = "ascending") -> List[int]:
+        self.validate(data)
+        arr = data.copy()
+        n = len(arr)
+        reverse = order == "descending"
 
         for i in range(n):
             for j in range(0, n - i - 1):
-                if (order == "ascending" and data[j] > data[j+1]) or \
-                   (order == "descending" and data[j] < data[j+1]):
-                    data[j], data[j+1] = data[j+1], data[j]
+                if (not reverse and arr[j] > arr[j + 1]) or \
+                   (reverse and arr[j] < arr[j + 1]):
+                    arr[j], arr[j + 1] = arr[j + 1], arr[j]
 
-        return data
+        return arr
 
+
+# ----------------------------- SELECTION SORT -------------------------------- #
 
 class SelectionSort(SortAlgorithm):
-    """
-    Selection Sort algorithm implementation.
-    Selects the minimum/maximum element and swaps it with the first unsorted element.
-    """
-    
-    def sort(self, data, order="ascending"):
-        data = data.copy()
-        n = len(data)
+    """Selection Sort algorithm implementation."""
+
+    def sort(self, data: List[int], order: str = "ascending") -> List[int]:
+        self.validate(data)
+        arr = data.copy()
+        n = len(arr)
+        reverse = order == "descending"
 
         for i in range(n):
             idx = i
             for j in range(i + 1, n):
-                if (order == "ascending" and data[j] < data[idx]) or \
-                   (order == "descending" and data[j] > data[idx]):
+                if (not reverse and arr[j] < arr[idx]) or \
+                   (reverse and arr[j] > arr[idx]):
                     idx = j
+            arr[i], arr[idx] = arr[idx], arr[i]
 
-            data[i], data[idx] = data[idx], data[i]
+        return arr
 
-        return data
-    
-    
+
+# ------------------------------ QUICK SORT ----------------------------------- #
+
 class QuickSort(SortAlgorithm):
-    """
-    Quick Sort implementation using divide-and-conquer.
-    """
-    
-    def sort(self, data, order="ascending"):
+    """Quick Sort implementation using divide-and-conquer."""
+
+    def sort(self, data: List[int], order: str = "ascending") -> List[int]:
+        self.validate(data)
+
         if len(data) <= 1:
             return data.copy()
 
+        reverse = order == "descending"
         pivot = data[len(data) // 2]
 
-        left = [x for x in data if (x < pivot and order == "ascending") or
-                                   (x > pivot and order == "descending")]
+        left = [x for x in data if (x < pivot and not reverse) or (x > pivot and reverse)]
         mid = [x for x in data if x == pivot]
-        right = [x for x in data if (x > pivot and order == "ascending") or
-                                    (x < pivot and order == "descending")]
+        right = [x for x in data if (x > pivot and not reverse) or (x < pivot and reverse)]
 
         return self.sort(left, order) + mid + self.sort(right, order)
 
 
+# ------------------------------ MERGE SORT ----------------------------------- #
+
 class MergeSort(SortAlgorithm):
-    """
-    Merge Sort implementation that splits the list,
-    sorts each half, and merges them.
-    """
-    
-    def sort(self, data, order="ascending"):
+    """Merge Sort implementation."""
+
+    def sort(self, data: List[int], order: str = "ascending") -> List[int]:
+        self.validate(data)
+
         if len(data) <= 1:
             return data.copy()
 
@@ -100,39 +157,51 @@ class MergeSort(SortAlgorithm):
 
         return self._merge(left, right, order)
 
-    def _merge(self, left, right, order):
-        result = []
-        while left and right:
-            if (order == "ascending" and left[0] < right[0]) or \
-               (order == "descending" and left[0] > right[0]):
-                result.append(left.pop(0))
-            else:
-                result.append(right.pop(0))
+    def _merge(self, left: List[int], right: List[int], order: str) -> List[int]:
+        reverse = order == "descending"
+        merged = []
+        i = j = 0
 
-        result.extend(left)
-        result.extend(right)
-        return result
-    
+        # Efficient merge using pointers instead of pop(0)
+        while i < len(left) and j < len(right):
+            if (not reverse and left[i] < right[j]) or \
+               (reverse and left[i] > right[j]):
+                merged.append(left[i])
+                i += 1
+            else:
+                merged.append(right[j])
+                j += 1
+
+        merged.extend(left[i:])
+        merged.extend(right[j:])
+
+        return merged
+
+
+# ---------------------------- SORTING SELECTOR ------------------------------- #
+
 class SortingSelector:
-    """
-    Factory class that returns and runs the selected sorting algorithm.
-    """
-    
-    def __init__(self, algorithm_name):
+    """Factory class to select and execute a sorting algorithm."""
+
+    def __init__(self, algorithm_name: str):
         self.algorithm_name = algorithm_name.lower()
 
-    def get_algorithm(self):
-        if self.algorithm_name == "bubble":
-            return BubbleSort()
-        elif self.algorithm_name == "selection":
-            return SelectionSort()
-        elif self.algorithm_name == "quick":
-            return QuickSort()
-        elif self.algorithm_name == "merge":
-            return MergeSort()
-        else:
+    def get_algorithm(self) -> SortAlgorithm:
+        """Returns an instance of the requested sorting algorithm."""
+        algorithms = {
+            "bubble": BubbleSort,
+            "selection": SelectionSort,
+            "quick": QuickSort,
+            "merge": MergeSort,
+            "shell": ShellSort,
+        }
+
+        if self.algorithm_name not in algorithms:
             raise ValueError("Invalid algorithm name.")
 
-    def sort(self, data, order="ascending"):
-        algo = self.get_algorithm()
-        return algo.sort(data, order)
+        return algorithms[self.algorithm_name]()
+
+    def sort(self, data: List[int], order: str = "ascending") -> List[int]:
+        """Runs the requested algorithm."""
+        algorithm = self.get_algorithm()
+        return algorithm.sort(data, order)

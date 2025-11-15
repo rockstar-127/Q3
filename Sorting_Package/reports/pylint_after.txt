@@ -1,0 +1,6 @@
+************* Module sorting_algorithms
+Sorting_Package/src/sorting_algorithms.py:196:21: E0602: Undefined variable 'ShellSort' (undefined-variable)
+
+-------------------------------------------------------------------
+Your code has been rated at 9.39/10 (previous run: 10.00/10, -0.61)
+
